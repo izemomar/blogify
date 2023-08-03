@@ -1,0 +1,98 @@
+version: '3'
+
+name: blogify-dev
+
+services:
+  api:
+    build: 
+      context: ../api/docker/nginx
+      dockerfile: Dockerfile.dev
+    container_name: blogify-api
+    restart: unless-stopped
+    expose:
+      - 8000
+    ports:
+      - "8000:8000"
+    environment:
+      - APP_ENV=dev
+    volumes:
+      - ../api/src:/var/www/html:delegated
+    networks:
+      - blogify-dev
+    depends_on:
+      - db
+      - php
+    
+  php:
+    image: blogify-php:dev
+    container_name: blogify-php
+    restart: unless-stopped
+    environment:
+      - APP_ENV=dev
+    volumes:
+      - ../api/src:/var/www/html:delegated
+    networks:
+      - blogify-dev
+    depends_on:
+      - db
+
+  composer:
+    image: blogify-php:dev
+    container_name: blogify-composer
+    volumes:
+      - ../api/src:/var/www/html
+    depends_on:
+      - php
+    entrypoint: [ 'composer', 'install', '--ignore-platform-reqs' ]
+    networks:
+      - blogify-dev
+  
+  artisan:
+    image: blogify-php:dev
+    container_name: blogify-artisan
+    volumes:
+      - ../api/src:/var/www/html
+    depends_on:
+      - db
+    entrypoint: [ '/bin/sh', '-c' ]
+    command: >
+      "php artisan storage:link"
+    networks:
+      - blogify-dev
+  
+  db:
+    image: mysql:8.0
+    container_name: blogify-db
+    restart: unless-stopped
+    environment:
+      - MYSQL_DATABASE=${DB_DATABASE}
+      - MYSQL_USER=${DB_USERNAME}
+      - MYSQL_PASSWORD=${DB_PASSWORD}
+      - MYSQL_ROOT_PASSWORD=${DB_PASSWORD}
+      - MYSQL_TCP_PORT=${DB_PORT}
+      - MYSQL_ALLOW_EMPTY_PASSWORD=yes
+    expose:
+      - ${DB_PORT}
+    volumes:
+      - ../data/db:/var/lib/mysql
+    networks:
+      - blogify-dev
+  
+  phpmyadmin:
+    image: phpmyadmin/phpmyadmin
+    container_name: blogify-phpmyadmin
+    restart: unless-stopped
+    environment:
+      - PMA_HOST=${DB_HOST}
+      - PMA_PORT=${DB_PORT}
+      - PMA_USER=${DB_USERNAME}
+      - PMA_PASSWORD=${DB_PASSWORD}
+    ports:
+      - 4406:80
+    networks:
+      - blogify-dev
+    depends_on:
+      - db
+
+networks:
+  blogify-dev:
