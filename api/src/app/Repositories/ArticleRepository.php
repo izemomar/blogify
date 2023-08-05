@@ -12,4 +12,16 @@ class ArticleRepository
 
         return $article;
     }
+
+    /**
+     * @param int $id
+     * @return Article
+     * 
+     * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
+     */
+    public function getOneById(int $id): Article
+    {
+        $article = Article::findOrFail($id)->load('metas');
+        return $article;
+    }
 }

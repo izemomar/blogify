@@ -2,6 +2,7 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Actions\Api\V1\Articles\GetArticleByIdAction;
 use App\Http\Controllers\Controller;
 use App\Actions\Api\V1\Articles\StoreArticleAction;
 use App\Concerns\Api\JsonableResponse;
@@ -14,7 +15,7 @@ class ArticleController extends Controller
 {
     use JsonableResponse;
 
-    public function __construct(protected StoreArticleAction $storeArticleAction)
+    public function __construct(protected StoreArticleAction $storeArticleAction, protected GetArticleByIdAction $getArticleByIdAction)
     {
     }
 
@@ -24,6 +25,15 @@ class ArticleController extends Controller
     public function index()
     {
         //
+    }
+
+    /**
+     * Display the specified resource.
+     */
+    public function show(int $id)
+    {
+        $article = $this->getArticleByIdAction->execute($id);
+        return $this->respondWithSuccess(data: $article);
     }
 
     /**

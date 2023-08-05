@@ -37,7 +37,7 @@ class ArticleHelper
         $meta = [];
 
         $meta[] = ArticleMetaDTO::fromArray([
-            'key' => 'count_words',
+            'key' => 'word_count',
             'value' => self::countWords($articleDTO->content),
             'type' => 'number'
         ]);

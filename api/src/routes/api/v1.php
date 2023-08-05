@@ -13,4 +13,4 @@ Route::get('/test', function () {
 
 
 Route::apiResource('articles', ArticleController::class)
-    ->only(['index', 'store', 'update', 'destroy']);
+    ->only(['index', 'show', 'store', 'update', 'destroy']);
