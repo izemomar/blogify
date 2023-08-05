@@ -1,0 +1,39 @@
+name: Api CI/CD
+
+on:
+  push:
+    branches: [ "main" ]
+    paths:
+      - 'api/src/**'
+  pull_request:
+    branches: [ "main" ]
+    paths:
+      - 'api/src/**'
+
+jobs:
+  
+  format:
+    runs-on: ubuntu-latest
+    permissions:
+      contents: write
+    defaults:
+      run:
+        working-directory: api/src
+    steps:
+    - uses: actions/checkout@v3
+      with:
+        ref: ${{ github.head_ref }}
+    - name: Setup PHP
+      uses: shivammathur/setup-php@15c43e89cdef867065b0213be354c2841860869e
+      with:
+        php-version: '8.1'
+    - name: Install Dependencies
+      run: composer install -q --no-ansi --no-interaction --no-scripts --no-progress --prefer-dist
+    - name: Execute Pint (PHP Lint)
+      run: ./vendor/bin/pint
+    - name: Commit formatted code
+      uses: stefanzweifel/git-auto-commit-action@v4
+      with:
+        commit_message: "chore(api): format code"
+        skip_fetch: true
+        
