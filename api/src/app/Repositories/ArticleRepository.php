@@ -2,7 +2,9 @@
 
 namespace App\Repositories;
 
+use App\DTOs\Articles\ArticlePaginationDTO;
 use App\Models\Api\V1\Article;
+use Illuminate\Pagination\LengthAwarePaginator;
 
 class ArticleRepository
 {
@@ -45,5 +47,29 @@ class ArticleRepository
         $article = $this->getOneById($id);
 
         $article->delete();
+    }
+
+    public function paginate(ArticlePaginationDTO $dto): LengthAwarePaginator
+    {
+        $articles = Article::query();
+
+        if (count($dto->include) > 0) {
+            $articles->with($dto->include);
+        }
+
+        if ($dto->search) {
+            $articles->where('title', 'like', "%{$dto->search}%");
+        }
+
+        if ($dto->status) {
+            $articles->where('status', $dto->status);
+        }
+
+        if ($dto->orderBy) {
+            $articles->orderBy($dto->orderBy, $dto->orderDirection);
+        }
+
+        return
+            $articles->paginate($dto->perPage, ['*'], 'page', $dto->page);
     }
 }
