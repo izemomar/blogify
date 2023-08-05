@@ -24,4 +24,26 @@ class ArticleRepository
         $article = Article::findOrFail($id)->load('metas');
         return $article;
     }
+
+    public function update(int $id, array $data): Article
+    {
+        $article = $this->getOneById($id);
+
+        $article->update($data);
+
+        return $article;
+    }
+
+    public function reloadRelationships(Article $article): Article
+    {
+        $article->load('metas');
+        return $article;
+    }
+
+    public function delete(int $id): void
+    {
+        $article = $this->getOneById($id);
+
+        $article->delete();
+    }
 }

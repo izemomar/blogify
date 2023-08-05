@@ -10,27 +10,34 @@ class ArticleDTO
 {
     use ParsableDTO;
 
-    public readonly string $title;
+    public string $title;
 
-    public readonly string $slug;
+    public string $slug;
 
-    public readonly string $summary;
+    public string $summary;
 
-    public readonly string $content;
+    public string $content;
 
-    public readonly ArticleStatusEnum|string $status;
+    public ArticleStatusEnum|string $status;
 
     /**
      * To store the incoming image file from the request.
      *
-     * @var UploadedFile|null
+     * @var UploadedFile|string|null
      */
-    public readonly ?UploadedFile $image;
+    public UploadedFile|string|null $image;
 
     /**
      * To store the image file name.
      */
-    public readonly ?string $imageFileName;
+    public ?string $imageFileName;
+
+    public function __construct()
+    {
+        $this->status = ArticleStatusEnum::DRAFT;
+        $this->image = null;
+        $this->imageFileName = null;
+    }
 
     public function setImageFileName(?string $imageFileName): self
     {

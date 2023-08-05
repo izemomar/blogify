@@ -14,6 +14,8 @@ class UploadArticleImageAction
 
     public static string $defaultImage = 'articles/no-image.png';
 
+    public readonly bool $isNew;
+
     protected string $fileName;
 
     protected UploadedFile|null $image;
@@ -22,10 +24,32 @@ class UploadArticleImageAction
     {
         if ($image instanceof UploadedFile) {
             $this->image = $image;
-        } else {
-            $this->image = null;
+            $this->isNew = true;
+            return $this;
         }
 
+        if (is_string($image)) {
+            // remove base url from the image
+            $image = str_replace(config('app.url') . '/images/', '', $image); // articles/*.*
+            $originalImageName = str_replace('articles/', '', $image); // *.*
+
+            // check if the image exists in the storage
+            if (Storage::disk(self::$storageDisk)->exists($image)) {
+
+                $this->image = new UploadedFile(
+                    $image,
+                    $originalImageName,
+                    Storage::disk(self::$storageDisk)->mimeType($image),
+                    null,
+                    true
+                );
+                $this->isNew = false;
+                return $this;
+            }
+        }
+
+        $this->image = null;
+        $this->isNew = false;
         return $this;
     }
 
@@ -35,8 +59,18 @@ class UploadArticleImageAction
     public function generateAndSetFileName(): static
     {
         if (isset($this->image)) {
-            $this->fileName = $this->image->hashName();
+            if ($this->isNew) {
+                $this->fileName = $this->image->hashName();
+                return $this;
+            }
+
+            if (is_string($this->image) && !$this->isNew) {
+                $this->fileName = $this->image;
+                return $this;
+            }
         }
+
+        $this->fileName = self::$defaultImage;
 
         return $this;
     }
@@ -82,5 +116,10 @@ class UploadArticleImageAction
     public function delete(): bool
     {
         return Storage::disk(self::$storageDisk)->delete($this->getFilePath());
+    }
+
+    public static function deleteImage(string $image): bool
+    {
+        return Storage::disk(self::$storageDisk)->delete($image);
     }
 }

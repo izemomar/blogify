@@ -2,12 +2,15 @@
 
 namespace App\Http\Controllers\Api\V1;
 
+use App\Actions\Api\V1\Articles\DeleteArticleAction;
 use App\Actions\Api\V1\Articles\GetArticleByIdAction;
 use App\Http\Controllers\Controller;
 use App\Actions\Api\V1\Articles\StoreArticleAction;
+use App\Actions\Api\V1\Articles\UpdateArticleAction;
 use App\Concerns\Api\JsonableResponse;
 use App\DTOs\Articles\ArticleDTO;
 use App\Http\Requests\Api\V1\StoreArticleRequest;
+use App\Http\Requests\Api\V1\UpdateArticleRequest;
 use App\Models\Api\V1\Article;
 use Illuminate\Http\Request;
 
@@ -15,7 +18,7 @@ class ArticleController extends Controller
 {
     use JsonableResponse;
 
-    public function __construct(protected StoreArticleAction $storeArticleAction, protected GetArticleByIdAction $getArticleByIdAction)
+    public function __construct(protected StoreArticleAction $storeArticleAction, protected GetArticleByIdAction $getArticleByIdAction, protected UpdateArticleAction $updateArticleAction, protected DeleteArticleAction $deleteArticleAction)
     {
     }
 
@@ -51,16 +54,22 @@ class ArticleController extends Controller
     /**
      * Update the specified resource in storage.
      */
-    public function update(Request $request, Article $article)
+    public function update(UpdateArticleRequest $request, int $id)
     {
-        //
+        $dto = ArticleDTO::fromRequest($request->validated());
+
+        $article = $this->updateArticleAction->execute($id, $dto);
+
+        return $this->respondWithSuccess(data: $article);
     }
 
     /**
      * Remove the specified resource from storage.
      */
-    public function destroy(Article $article)
+    public function destroy(int $id)
     {
-        //
+        $this->deleteArticleAction->execute($id);
+
+        return $this->respondWithSuccess();
     }
 }

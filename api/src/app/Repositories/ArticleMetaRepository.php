@@ -10,4 +10,15 @@ class ArticleMetaRepository
     {
         $article->metas()->createMany($data);
     }
+
+    public function upsertMany(Article $article, array $data): void
+    {
+        $article->metas()->delete();
+        $this->createMany($article, $data);
+    }
+
+    public function deleteMany(Article $article): void
+    {
+        $article->metas()->delete();
+    }
 }
