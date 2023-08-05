@@ -6,7 +6,6 @@ use App\Exceptions\BaseException;
 use Illuminate\Http\JsonResponse;
 use Illuminate\Http\Response;
 use Illuminate\Pagination\LengthAwarePaginator;
-use Illuminate\Support\Arr;
 
 trait JsonableResponse
 {
