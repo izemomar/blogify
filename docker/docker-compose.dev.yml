@@ -21,6 +21,7 @@ services:
       - blogify-dev
     depends_on:
       - db
+      - blogify-mongo-db
       - php
     
   php:
@@ -35,6 +36,7 @@ services:
       - blogify-dev
     depends_on:
       - db
+      - blogify-mongo-db
 
   composer:
     image: blogify-php:dev
@@ -54,6 +56,7 @@ services:
       - ../api/src:/var/www/html
     depends_on:
       - db
+      - blogify-mongo-db
     entrypoint: [ '/bin/sh', '-c' ]
     command: >
       "php artisan storage:link"
@@ -93,6 +96,41 @@ services:
       - blogify-dev
     depends_on:
       - db
+  
+  blogify-mongo-db:
+    image: mongo
+    container_name: blogify-mongo-db
+    restart: unless-stopped
+    environment:
+      - MONGO_INITDB_ROOT_USERNAME=${MONGO_DB_USERNAME}
+      - MONGO_INITDB_ROOT_PASSWORD=${MONGO_DB_PASSWORD}
+      - MONGO_INITDB_DATABASE=${MONGO_DB_DATABASE}
+    ports:
+      - "27017:27017"
+    volumes:
+      - ../data/mongo:/data/db
+    networks:
+      - blogify-dev
+
+  client:
+    image: blogify-client:dev
+    container_name: blogify-client
+    restart: unless-stopped
+    volumes:
+      - ../client/app:/usr/app
+    ports:
+      - "3000:3000"
+    networks:
+      - blogify-dev
+  
+  client-npm:
+    image: blogify-client:dev
+    container_name: blogify-client-npm
+    volumes:
+      - ../client/app:/usr/app
+    command: [ 'npm', 'install' ]
+    networks:
+      - blogify-dev
 
 networks:
   blogify-dev:
