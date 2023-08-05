@@ -44,8 +44,7 @@ class StoreArticleAction
 
             // Upload image
             $this->uploadArticleImageAction->execute();
-
-            $article->load('metas');
+            $this->articleRepository->reloadRelationships($article);
 
             return new ArticleResource($article);
         } catch (\Exception $e) {
