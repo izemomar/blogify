@@ -1,6 +1,6 @@
 <?php
 
-use App\Http\Controllers\ImageController;
+use App\Http\Controllers\Web\ImageController;
 use Illuminate\Support\Facades\Route;
 
 /*
@@ -17,3 +17,5 @@ use Illuminate\Support\Facades\Route;
 Route::get('/', function () {
     return response()->json(['version' => app()->version()]);
 });
+
+Route::get('/images/{image?}', ImageController::class)->where('image', '.*');

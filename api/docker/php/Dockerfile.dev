@@ -16,12 +16,12 @@ WORKDIR /var/www/html
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # add user and group
-RUN addgroup -g ${GID} --system yc-coding-challeng
-RUN adduser -G yc-coding-challeng --system -D -s /bin/sh -u ${UID} yc-coding-challeng
+RUN addgroup -g ${GID} --system blogify
+RUN adduser -G blogify --system -D -s /bin/sh -u ${UID} blogify
 
-# modify the php user to yc-coding-challeng ( to avoid permission issues )
-RUN sed -i "s/user = www-data/user = yc-coding-challeng/g" /usr/local/etc/php-fpm.d/www.conf
-RUN sed -i "s/group = www-data/group = yc-coding-challeng/g" /usr/local/etc/php-fpm.d/www.conf
+# modify the php user to blogify ( to avoid permission issues )
+RUN sed -i "s/user = www-data/user = blogify/g" /usr/local/etc/php-fpm.d/www.conf
+RUN sed -i "s/group = www-data/group = blogify/g" /usr/local/etc/php-fpm.d/www.conf
 RUN echo "php_admin_flag[display_errors] = on" >> /usr/local/etc/php-fpm.d/www.conf
 
 # install phpredis
@@ -42,8 +42,14 @@ RUN apk add --no-cache libpng-dev libjpeg-turbo-dev libwebp-dev zlib-dev libxpm-
     && docker-php-ext-configure gd --with-jpeg --with-webp --with-xpm \
     && docker-php-ext-install gd
 
+# install mongodb extension (ext-mongodb ^1.15.0)
+RUN apk add --no-cache --virtual .mongodb-ext-build-deps $PHPIZE_DEPS openssl-dev \
+    && pecl install mongodb \
+    && docker-php-ext-enable mongodb \
+    && apk del .mongodb-ext-build-deps 
+
 # set user
-USER yc-coding-challeng
+USER blogify
 
 # run php-fpm
 CMD ["php-fpm", "-y", "/usr/local/etc/php-fpm.conf", "-R"]

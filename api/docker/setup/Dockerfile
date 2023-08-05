@@ -16,14 +16,14 @@ WORKDIR /var/www/html
 COPY --from=composer:latest /usr/bin/composer /usr/bin/composer
 
 # add user and group
-RUN addgroup -g ${GID} --system yc-coding-challeng
-RUN adduser -G yc-coding-challeng --system -D -s /bin/sh -u ${UID} yc-coding-challeng
+RUN addgroup -g ${GID} --system blogify
+RUN adduser -G blogify --system -D -s /bin/sh -u ${UID} blogify
 
 # set user
-USER yc-coding-challeng
+USER blogify
 
 # add entrypoint
-COPY --chown=yc-coding-challeng:yc-coding-challeng ./docker/setup/create-project.entrypoint.sh /usr/local/bin/create-project.entrypoint.sh
+COPY --chown=blogify:blogify ./docker/setup/create-project.entrypoint.sh /usr/local/bin/create-project.entrypoint.sh
 RUN chmod +x /usr/local/bin/create-project.entrypoint.sh
 ENTRYPOINT [ "sh" , "/usr/local/bin/create-project.entrypoint.sh" ]
 
