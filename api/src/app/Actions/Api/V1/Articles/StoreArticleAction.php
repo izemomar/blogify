@@ -7,6 +7,7 @@ use App\Exceptions\Articles\ArticleCreationException;
 use App\Exceptions\Articles\ArticleImageStorageException;
 use App\Helpers\ArticleHelper;
 use App\Http\Resources\Api\V1\ArticleResource;
+use App\Models\Api\V1\Article;
 use App\Repositories\ArticleMetaRepository;
 use App\Repositories\ArticleRepository;
 use App\Validators\Articles\StoreArticleValidator;
@@ -27,36 +28,41 @@ class StoreArticleAction
                 $this->articleValidator->validate($articleDTO);
             }
 
-            // Generate and set file name with extension
-            $this->uploadArticleImageAction->setImage($articleDTO->image);
-            $this->uploadArticleImageAction->generateAndSetFileName();
-            $articleDTO->setImageFileName($this->uploadArticleImageAction->getFilePath());
+            $articleDTO = $this->prepareImageAndUpdateDto($articleDTO);
 
-            // Generate and set slug
-            $articleDTO->setSlug(ArticleHelper::generateSlug($articleDTO->title));
-
-            // Create article
             $article = $this->articleRepository->create($articleDTO->toModel());
 
-            // Create article metas
-            $meta = ArticleHelper::generateDefaultMeta($articleDTO);
-            $this->articleMetaRepository->createMany($article, Arr::map($meta, fn ($item) => $item->toModel()));
+            $this->createDefaultMeta($article, $articleDTO);
 
             // Upload image
             $this->uploadArticleImageAction->execute();
+
             $this->articleRepository->reloadRelationships($article);
 
             return new ArticleResource($article);
         } catch (\Exception $e) {
-            if ($this->uploadArticleImageAction->getFileName() !== UploadArticleImageAction::$defaultImage) {
-                $this->uploadArticleImageAction->delete();
-            }
+            $this->uploadArticleImageAction->rollback();
 
-            if (!($e instanceof ArticleImageStorageException) && !($e instanceof ValidationException)) {
+            if (! ($e instanceof ArticleImageStorageException) && ! ($e instanceof ValidationException)) {
                 throw new ArticleCreationException(message: $e->getMessage(), previous: $e, details: ['article' => $articleDTO->toModel()]);
             }
 
             throw $e;
         }
+    }
+
+    private function createDefaultMeta(Article $article, ArticleDTO $articleDTO): void
+    {
+        $meta = ArticleHelper::generateDefaultMeta($articleDTO);
+        $this->articleMetaRepository->createMany($article, Arr::map($meta, fn ($item) => $item->toModel()));
+    }
+
+    private function prepareImageAndUpdateDto(ArticleDTO $articleDTO): ArticleDTO
+    {
+        $this->uploadArticleImageAction->setImage($articleDTO->image);
+        $this->uploadArticleImageAction->generateAndSetFileName();
+        $articleDTO->setImageFileName($this->uploadArticleImageAction->getFilePath());
+
+        return $articleDTO;
     }
 }

@@ -9,7 +9,9 @@ class ArticleMetaDTO
     use ParsableDTO;
 
     public readonly string $key;
+
     public readonly string $value;
+
     public readonly string $type;
 
     public function toModel(): array

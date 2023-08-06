@@ -1,9 +1,8 @@
 <?php
 
 use Illuminate\Database\Migrations\Migration;
-use Illuminate\Database\Schema\Blueprint;
-use Jenssegers\Mongodb\Schema\Blueprint as MongoBlueprint;
 use Illuminate\Support\Facades\Schema;
+use Jenssegers\Mongodb\Schema\Blueprint as MongoBlueprint;
 
 return new class extends Migration
 {

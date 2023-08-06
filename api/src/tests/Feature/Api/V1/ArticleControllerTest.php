@@ -3,12 +3,9 @@
 namespace Tests\Feature\Api\V1;
 
 use App\Enums\ArticleStatusEnum;
-use Illuminate\Foundation\Testing\RefreshDatabase;
-use Illuminate\Foundation\Testing\WithFaker;
-use Tests\TestCase;
-use Illuminate\Foundation\Testing\DatabaseMigrations;
 use Illuminate\Http\UploadedFile;
 use Illuminate\Testing\Fluent\AssertableJson;
+use Tests\TestCase;
 
 class ArticleControllerTest extends TestCase
 {
@@ -25,7 +22,7 @@ class ArticleControllerTest extends TestCase
             'status' => '',
         ];
 
-        $response = $this->postJson("/api/v1/articles", $data);
+        $response = $this->postJson('/api/v1/articles', $data);
 
         $response->assertStatus(422);
 
@@ -46,7 +43,7 @@ class ArticleControllerTest extends TestCase
             'status' => ArticleStatusEnum::DRAFT,
         ];
 
-        $response = $this->postJson("/api/v1/articles", $data);
+        $response = $this->postJson('/api/v1/articles', $data);
 
         $response->assertStatus(201);
 
