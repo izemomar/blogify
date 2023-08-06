@@ -10,16 +10,16 @@ class ArticleResource extends JsonResource
 {
     private function imageUrl(): string|null
     {
-        if (!is_null($this->image)) {
+        if (! is_null($this->image)) {
             // check if it is a full url
             if (filter_var($this->image, FILTER_VALIDATE_URL)) {
                 return $this->image;
             }
 
-            return config('app.url') . '/images/' . $this->image;
+            return config('app.url').'/images/'.$this->image;
         }
 
-        return config('app.url') . '/images/articles/no-image.png';
+        return config('app.url').'/images/articles/no-image.png';
     }
 
     /**

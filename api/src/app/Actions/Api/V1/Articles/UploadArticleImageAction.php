@@ -25,12 +25,13 @@ class UploadArticleImageAction
         if ($image instanceof UploadedFile) {
             $this->image = $image;
             $this->isNew = true;
+
             return $this;
         }
 
         if (is_string($image)) {
             // remove base url from the image
-            $image = str_replace(config('app.url') . '/images/', '', $image); // articles/*.*
+            $image = str_replace(config('app.url').'/images/', '', $image); // articles/*.*
             $originalImageName = str_replace('articles/', '', $image); // *.*
 
             // check if the image exists in the storage
@@ -44,12 +45,14 @@ class UploadArticleImageAction
                     true
                 );
                 $this->isNew = false;
+
                 return $this;
             }
         }
 
         $this->image = null;
         $this->isNew = false;
+
         return $this;
     }
 
@@ -61,11 +64,13 @@ class UploadArticleImageAction
         if (isset($this->image)) {
             if ($this->isNew) {
                 $this->fileName = $this->image->hashName();
+
                 return $this;
             }
 
-            if (is_string($this->image) && !$this->isNew) {
+            if (is_string($this->image) && ! $this->isNew) {
                 $this->fileName = $this->image;
+
                 return $this;
             }
         }
@@ -82,7 +87,7 @@ class UploadArticleImageAction
 
     public function getFilePath(): string
     {
-        return self::$storagePath . '/' . $this->fileName;
+        return self::$storagePath.'/'.$this->fileName;
     }
 
     /**
@@ -121,5 +126,14 @@ class UploadArticleImageAction
     public static function deleteImage(string $image): bool
     {
         return Storage::disk(self::$storageDisk)->delete($image);
+    }
+
+    public function rollback(): bool
+    {
+        if ($this->getFileName() !== UploadArticleImageAction::$defaultImage) {
+            $this->delete();
+        }
+
+        return true;
     }
 }

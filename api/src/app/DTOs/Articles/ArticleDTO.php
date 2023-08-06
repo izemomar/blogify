@@ -22,8 +22,6 @@ class ArticleDTO
 
     /**
      * To store the incoming image file from the request.
-     *
-     * @var UploadedFile|string|null
      */
     public UploadedFile|string|null $image;
 
@@ -42,12 +40,14 @@ class ArticleDTO
     public function setImageFileName(?string $imageFileName): self
     {
         $this->imageFileName = $imageFileName;
+
         return $this;
     }
 
     public function setSlug(string $slug): self
     {
         $this->slug = $slug;
+
         return $this;
     }
 

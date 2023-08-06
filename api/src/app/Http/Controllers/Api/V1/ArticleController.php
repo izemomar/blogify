@@ -5,18 +5,16 @@ namespace App\Http\Controllers\Api\V1;
 use App\Actions\Api\V1\Articles\DeleteArticleAction;
 use App\Actions\Api\V1\Articles\GetArticleByIdAction;
 use App\Actions\Api\V1\Articles\PaginateArticlesAction;
-use App\Http\Controllers\Controller;
 use App\Actions\Api\V1\Articles\StoreArticleAction;
 use App\Actions\Api\V1\Articles\UpdateArticleAction;
 use App\Concerns\Api\JsonableResponse;
-use App\DTOs\Articles\ArticlePaginationDTO;
 use App\DTOs\Articles\ArticleDTO;
+use App\DTOs\Articles\ArticlePaginationDTO;
+use App\Http\Controllers\Controller;
 use App\Http\Requests\Api\V1\StoreArticleRequest;
 use App\Http\Requests\Api\V1\UpdateArticleRequest;
 use App\Http\Requests\PaginateArticlesRequest;
 use App\Http\Resources\Api\V1\ArticleResource;
-use App\Models\Api\V1\Article;
-use Illuminate\Http\Request;
 
 class ArticleController extends Controller
 {
@@ -42,13 +40,13 @@ class ArticleController extends Controller
         );
     }
 
-
     /**
      * Display the specified resource.
      */
     public function show(int $id)
     {
         $article = $this->getArticleByIdAction->execute($id);
+
         return $this->respondWithSuccess(data: $article);
     }
 

@@ -7,22 +7,18 @@ use App\Repositories\ArticleRepository;
 
 class GetArticleByIdAction
 {
-
     public function __construct(
         protected ArticleRepository $articleRepository
     ) {
     }
 
     /**
-     * @param int $id
-     * 
-     * @return ArticleResource
-     * 
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function execute(int $id): ArticleResource
     {
         $article = $this->articleRepository->getOneById($id);
+
         return new ArticleResource($article);
     }
 }

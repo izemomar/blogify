@@ -16,14 +16,12 @@ class ArticleRepository
     }
 
     /**
-     * @param int $id
-     * @return Article
-     * 
      * @throws \Illuminate\Database\Eloquent\ModelNotFoundException
      */
     public function getOneById(int $id): Article
     {
         $article = Article::findOrFail($id)->load('metas');
+
         return $article;
     }
 
@@ -39,6 +37,7 @@ class ArticleRepository
     public function reloadRelationships(Article $article): Article
     {
         $article->load('metas');
+
         return $article;
     }
 
@@ -69,7 +68,6 @@ class ArticleRepository
             $articles->orderBy($dto->orderBy, $dto->orderDirection);
         }
 
-        return
-            $articles->paginate($dto->perPage, ['*'], 'page', $dto->page);
+        return $articles->paginate($dto->perPage, ['*'], 'page', $dto->page);
     }
 }

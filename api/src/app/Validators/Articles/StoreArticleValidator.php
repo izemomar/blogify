@@ -5,7 +5,6 @@ namespace App\Validators\Articles;
 use App\DTOs\Articles\ArticleDTO;
 use App\Enums\ArticleStatusEnum;
 use Illuminate\Validation\Rule;
-use Illuminate\Validation\Rules\Enum;
 
 class StoreArticleValidator
 {

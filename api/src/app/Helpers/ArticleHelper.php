@@ -27,9 +27,8 @@ class ArticleHelper
 
     /**
      * Generate default meta for an article.
-     * 
-     * @param ArticleDTO $articleDTO
-     * 
+     *
+     *
      * @return App\DTOs\Articles\ArticleMetaDTO[]
      */
     public static function generateDefaultMeta(ArticleDTO $articleDTO): array
@@ -39,13 +38,13 @@ class ArticleHelper
         $meta[] = ArticleMetaDTO::fromArray([
             'key' => 'word_count',
             'value' => self::countWords($articleDTO->content),
-            'type' => 'number'
+            'type' => 'number',
         ]);
 
         $meta[] = ArticleMetaDTO::fromArray([
             'key' => 'minutes_to_read',
             'value' => self::countMinutesToRead($articleDTO->content),
-            'type' => 'number'
+            'type' => 'number',
         ]);
 
         return $meta;
