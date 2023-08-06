@@ -1,0 +1,8 @@
+FROM node:19.0.0-alpine as node
+
+# workdir
+WORKDIR /usr/app
+
+EXPOSE 3000
+
+CMD ["npm", "run", "dev"]
