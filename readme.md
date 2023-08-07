@@ -50,6 +50,16 @@ To run the project, perform the following steps:
    php artisan test
    ```
 
+
+5. To access the client container simply run:
+
+   ```shell
+   make it.dev container="blogify-client"
+   ```
+
+ 6. The API server will be accessible at `http://localhost:8000`, and the frontend at `http://localhost:3000`.
+
+
  ### Note:
  All dependencies will be installed automatically
 
