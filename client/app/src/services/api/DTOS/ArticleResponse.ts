@@ -1,4 +1,3 @@
-import { ApiResponse } from '@/shared/utils/types/ApiResponse';
 import { ArticleMetaResponse } from './ArticleMetaResponse';
 import { Pagination } from './Pagination';
 
