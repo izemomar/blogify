@@ -18,7 +18,7 @@ class ArticlePaginationDTO
         public readonly string $orderBy = 'id',
         public readonly string $orderDirection = 'asc',
         public readonly string $search = '',
-        public readonly string $status = '',
+        public readonly string|null $status = null,
         public readonly array $include = [],
     ) {
     }
@@ -28,10 +28,10 @@ class ArticlePaginationDTO
         return new static(
             page: $data['page'] ?? 1,
             perPage: $data['perPage'] ?? static::$defaultPerPage,
-            orderBy: $data['orderBy'] ?? 'id',
+            orderBy: $data['orderBy'] ?? 'created_at',
             orderDirection: $data['dir'] ?? 'asc',
             search: $data['search'] ?? '',
-            status: $data['status'] ?? '',
+            status: $data['status'] ?? null,
             include: $data['include'] ?? [],
         );
     }

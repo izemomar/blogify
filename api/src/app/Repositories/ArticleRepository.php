@@ -56,15 +56,15 @@ class ArticleRepository
             $articles->with($dto->include);
         }
 
-        if ($dto->search) {
+        if (isset($dto->search)) {
             $articles->where('title', 'like', "%{$dto->search}%");
         }
 
-        if ($dto->status) {
+        if (isset($dto->status)) {
             $articles->where('status', $dto->status);
         }
 
-        if ($dto->orderBy) {
+        if (isset($dto->orderBy)) {
             $articles->orderBy($dto->orderBy, $dto->orderDirection);
         }
 
