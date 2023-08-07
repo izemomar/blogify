@@ -1,7 +1,14 @@
-<script setup lang="ts"></script>
+<script lang="ts">
+import Articles from '@/views/Articles.vue';
+export default {
+  components: {
+    Articles
+  }
+};
+</script>
 
 <template>
-  <h1>Hello App</h1>
+  <Articles />
 </template>
 
 <style scoped></style>
